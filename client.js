@@ -2,25 +2,43 @@ const net = require('net');
 const readline = require("readline");
 const fs = require("fs");
 
-const rl = readline.createInterface = {
+const rl = readline.createInterface({
   input: process.stdin,
-  output:process.stdout,
-} 
+  output: process.stdout
+});
 
-
-const conn = net.createConnection({
+const client = net.createConnection({
   host: 'localhost',
   port: 3000,
 });
 
-conn.setEncoding('utf8');
+client.setEncoding('utf8');
 
-conn.on("data", (data) => {
-  console.log("Server says:", data);
+client.on("data", (data) => {
+  // console.log("\nServer says:", data);
+  console.log(data);
+ 
 })
 
-conn.on("connect", () => {
-  conn.write("Hello from client!");
+// client.write("Hello from client!");
+rl.write("Hello, You have logged into an app that will allow you to access data from a given file on the server.\n")
+
+//prompt user to enter a file path
+//I want to display all the available files here
+
+rl.setPrompt("\nPlease enter a file path\n")
+
+//keep asking for a file to be read unless the user exits the server.
+
+rl.prompt();
+
+rl.on("line", (input) => {
+  client.write(input);
+  rl.prompt()
+}).on('close', () => {
+  console.log("\nYou have logged out\n")
+  process.exit();
 })
+
 
 
