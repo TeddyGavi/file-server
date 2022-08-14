@@ -38,6 +38,10 @@ rl.on('close', () => {
   process.exit();
 });
 
+client.on("close", () => {
+  console.log(`The server has shut down`);
+  process.exit();
+});
 
 
 

@@ -38,17 +38,24 @@ server.on("connection", (client) => {
     console.log(`The file path entered is ${data}`);
     client.write(`The file path entered is ${data}`);
 
+    fs.access(data, fs.constants.F_OK && fs.constants.R_OK, (err) => {
+      if (!err) {
+        //receives a file path from the client and send the data back to the client
+        fs.readFile(data, (err, body) => {
+          if (err) {
+            client.write(`There was an error: ${err}`);
+            return;
+          }
+          client.write(`This file contains: \nSTART\n${body}\n\tEND<-- ${msg}`);
+          return;
+        });
+      } else {
+        console.log(`There has been an error ${err}`);
+        client.write(`There has been an error ${err} Please try again ${msg}`);
 
-    //receives a file path from the client and send the data back to the client
-    fs.readFile(data, (err, body) => {
-      if (err) {
-        client.write(`There was an error: ${err}`);
-        return;
       }
-      client.write(`This file contains: \nSTART\n${body}\n\tEND<-- ${msg}`);
-      return;
-    });
 
+    });
   });
 
 
